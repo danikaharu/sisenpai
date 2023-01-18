@@ -2,10 +2,12 @@
 
 namespace Database\Seeders;
 
+use App\Models\Position;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
-class PositionSeeder extends Seeder
+class PositionTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,6 +16,8 @@ class PositionSeeder extends Seeder
      */
     public function run()
     {
-        //
+        Position::create([
+            'name' => 'Staff Ahli',
+        ]);
     }
 }
