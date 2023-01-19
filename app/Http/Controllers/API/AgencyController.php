@@ -77,11 +77,18 @@ class AgencyController extends Controller
      */
     public function destroy(Agency $agency)
     {
-        $agency->delete();
+        try {
+            $agency->delete();
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Data berhasil dihapus',
-        ], 200);
+            return response()->json([
+                'status' => true,
+                'message' => 'Data berhasil dihapus',
+            ], 200);
+        } catch (\Throwable $th) {
+            return response([
+                'message' => $th->getMessage(),
+                'status' => 'failed'
+            ], 400);
+        }
     }
 }
