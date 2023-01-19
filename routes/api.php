@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
-    Route::post('/logout', [\App\Http\Controllers\API\AuthController::class, 'logout']);
+    Route::post('/logout', [\App\Http\Controllers\API\AuthController::class, 'logout'])->name('logout');
 
     Route::apiResource('/agency', \App\Http\Controllers\API\AgencyController::class);
 
@@ -33,4 +33,4 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::apiResource('/attendance', \App\Http\Controllers\API\AttendanceController::class);
 });
 
-Route::post('/login', [\App\Http\Controllers\API\AuthController::class, 'login']);
+Route::post('/login', [\App\Http\Controllers\API\AuthController::class, 'login'])->name('login');
