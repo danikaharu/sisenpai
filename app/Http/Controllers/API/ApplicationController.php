@@ -30,7 +30,16 @@ class ApplicationController extends Controller
      */
     public function store(StoreApplicationRequest $request)
     {
-        $application = Application::create($request->all());
+        $attr = $request->validated();
+
+        if ($request->file('file') && $request->file('file')->isValid()) {
+            $filename = $request->file('file')->hashName();
+            $request->file('file')->storeAs('upload/pengajuan', $filename, 'public');
+
+            $attr['file'] = $filename;
+        }
+
+        $application = Application::create($attr);
 
         return response()->json([
             'status' => true,
@@ -59,7 +68,23 @@ class ApplicationController extends Controller
      */
     public function update(UpdateApplicationRequest $request, Application $application)
     {
-        $application->update($request->all());
+        $attr = $request->validated();
+
+        if ($request->file('file') && $request->file('file')->isValid()) {
+
+            $path = storage_path('app/public/upload/pengajuan/');
+            $filename = $request->file('file')->hashName();
+            $request->file('file')->storeAs('upload/pengajuan', $filename, 'public');
+
+            // delete old file from storage
+            if ($application->file != null && file_exists($path . $application->file)) {
+                unlink($path . $application->file);
+            }
+
+            $attr['file'] = $filename;
+        }
+
+        $application->update($attr);
 
         return response()->json([
             'status' => true,
@@ -76,11 +101,26 @@ class ApplicationController extends Controller
      */
     public function destroy(Application $application)
     {
-        $application->delete();
+        try {
+            // determine path file
+            $path = storage_path('app/public/upload/pengajuan/');
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Data berhasil dihapus',
-        ], 200);
+            // if application exist remove file from directory
+            if ($application->file != null && file_exists($path . $application->file)) {
+                unlink($path . $application->file);
+            }
+
+            $application->delete();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Data berhasil dihapus',
+            ], 200);
+        } catch (\Throwable $th) {
+            return response([
+                'message' => $th->getMessage(),
+                'status' => 'failed'
+            ], 400);
+        }
     }
 }
