@@ -28,6 +28,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::apiResource('/role', \App\Http\Controllers\API\RoleAndPermissionController::class);
 
+    Route::apiResource('/application', \App\Http\Controllers\API\ApplicationController::class);
+
     Route::apiResource('/attendance', \App\Http\Controllers\API\AttendanceController::class);
 });
 
