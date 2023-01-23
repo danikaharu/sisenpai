@@ -3,8 +3,6 @@
 namespace App\Http\Requests\Employee;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\Rules\Password;
 
 class StoreEmployeeRequest extends FormRequest
@@ -41,17 +39,9 @@ class StoreEmployeeRequest extends FormRequest
                     ->numbers()
                     ->symbols()
                     ->uncompromised()
-            ]
+            ],
+            'status' => ['required', 'in:0,1'],
         ];
-    }
-
-    public function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->json([
-            'success'   => false,
-            'message'   => 'Validation errors',
-            'data'      => $validator->errors()
-        ]));
     }
 
     public function messages()

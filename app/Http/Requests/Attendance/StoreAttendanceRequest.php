@@ -34,20 +34,12 @@ class StoreAttendanceRequest extends FormRequest
     {
         return [
             'user_id' => 'exists:users,id',
+            'type' => 'in:1,2,3,4',
             'longitude' => 'required',
             'latitude' => 'required',
-            'time' => 'required|date_format:H:i',
-            'photo' => 'required|image',
+            'time' => 'required|date_format:H:i:s',
+            'photo' => 'required',
         ];
-    }
-
-    public function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->json([
-            'success'   => false,
-            'message'   => 'Validation errors',
-            'data'      => $validator->errors()
-        ]));
     }
 
     public function messages()
@@ -59,7 +51,6 @@ class StoreAttendanceRequest extends FormRequest
             'time.required' => 'Waktu absen tidak boleh kosong',
             'time.date_format' => 'Maaf tidak sesuai format',
             'photo.required' => 'Selfie wajib',
-            'photo.image' => 'Hanya bisa gambar',
         ];
     }
 }
