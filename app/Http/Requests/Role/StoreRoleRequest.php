@@ -31,21 +31,12 @@ class StoreRoleRequest extends FormRequest
         ];
     }
 
-    public function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->json([
-            'success'   => false,
-            'message'   => 'Validation errors',
-            'data'      => $validator->errors()
-        ]));
-    }
-
     public function messages()
     {
         return [
             'name.required' => 'Nama wajib diisi',
-            'name.min' => 'Nama instansi minimal 2 kata',
-            'name.max' => 'Nama instansi maksimal 30 kata',
+            'name.min' => 'Nama minimal 2 kata',
+            'name.max' => 'Nama maksimal 30 kata',
             'name.unique' => 'Nama role sudah ada',
             'permissions.required' => 'Akses role wajib diisi',
         ];
