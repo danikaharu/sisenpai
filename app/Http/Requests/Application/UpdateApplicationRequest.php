@@ -3,8 +3,6 @@
 namespace App\Http\Requests\Application;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Contracts\Validation\Validator;
 
 class UpdateApplicationRequest extends FormRequest
 {
@@ -29,19 +27,11 @@ class UpdateApplicationRequest extends FormRequest
             'user_id' => 'exists:users,id',
             'type' => 'required|in:1,2,3',
             'explanation' => 'required',
-            'file' => 'required|max:2048|mimes:png,jpg,jpeg,pdf',
+            'file' => 'max:2048|mimes:png,jpg,jpeg,pdf',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after:start_date',
+            'status' => 'in:1,2,3'
         ];
-    }
-
-    public function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->json([
-            'success'   => false,
-            'message'   => 'Validation errors',
-            'data'      => $validator->errors()
-        ]));
     }
 
     public function messages()
