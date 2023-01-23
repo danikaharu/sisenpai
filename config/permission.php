@@ -161,12 +161,46 @@ return [
 
     'list_permissions' => [
         [
-            'group' => 'users',
+            'group' => 'employees',
             'lists' => [
-                'view user',
-                'create user',
-                'edit user',
-                'delete user',
+                'view employee',
+                'create employee',
+                'edit employee',
+                'delete employee',
+            ]
+        ],
+        [
+            'group' => 'positions',
+            'lists' => [
+                'view position',
+                'create position',
+                'edit position',
+                'delete position',
+            ]
+        ],
+        [
+            'group' => 'agencies',
+            'lists' => [
+                'view agency',
+                'create agency',
+                'edit agency',
+                'delete agency',
+            ]
+        ],
+        [
+            'group' => 'applications',
+            'lists' => [
+                'view application',
+                'create application',
+                'edit application',
+                'delete application',
+            ]
+        ],
+        [
+            'group' => 'attendances',
+            'lists' => [
+                'view attendance',
+                'create attendance',
             ]
         ],
         [
