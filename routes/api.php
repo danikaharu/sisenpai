@@ -15,22 +15,22 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::group(['middleware' => ['auth:sanctum']], function () {
-    Route::post('/logout', [\App\Http\Controllers\API\AuthController::class, 'logout'])->name('logout');
+// Route::group(['middleware' => ['auth:sanctum']], function () {
+//     Route::post('/logout', [\App\Http\Controllers\API\AuthController::class, 'logout'])->name('logout');
 
-    Route::apiResource('/agency', \App\Http\Controllers\API\AgencyController::class);
+//     Route::apiResource('/agency', \App\Http\Controllers\API\AgencyController::class);
 
-    Route::apiResource('/position', \App\Http\Controllers\API\PositionController::class);
+//     Route::apiResource('/position', \App\Http\Controllers\API\PositionController::class);
 
-    Route::apiResource('/employee', \App\Http\Controllers\API\EmployeeController::class);
+//     Route::apiResource('/employee', \App\Http\Controllers\API\EmployeeController::class);
 
-    Route::apiResource('/period', \App\Http\Controllers\API\PeriodController::class);
+//     Route::apiResource('/period', \App\Http\Controllers\API\PeriodController::class);
 
-    Route::apiResource('/role', \App\Http\Controllers\API\RoleAndPermissionController::class);
+//     Route::apiResource('/role', \App\Http\Controllers\API\RoleAndPermissionController::class);
 
-    Route::apiResource('/application', \App\Http\Controllers\API\ApplicationController::class);
+//     Route::apiResource('/application', \App\Http\Controllers\API\ApplicationController::class);
 
-    Route::apiResource('/attendance', \App\Http\Controllers\API\AttendanceController::class);
-});
+//     Route::apiResource('/attendance', \App\Http\Controllers\API\AttendanceController::class);
+// });
 
-Route::post('/login', [\App\Http\Controllers\API\AuthController::class, 'login'])->name('login');
+// Route::post('/login', [\App\Http\Controllers\API\AuthController::class, 'login'])->name('login');

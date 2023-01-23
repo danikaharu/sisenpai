@@ -16,3 +16,32 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('auth.login');
 });
+
+Route::post('/login', [\App\Http\Controllers\AuthController::class, 'login'])->name('login');
+
+Route::group(['middleware' => ['auth', 'web']], function () {
+    Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard.index');
+
+    Route::post('/logout', [\App\Http\Controllers\AuthController::class, 'logout'])->name('logout');
+
+    Route::resource('/agency', \App\Http\Controllers\AgencyController::class);
+
+    Route::resource('/position', \App\Http\Controllers\PositionController::class);
+
+    Route::resource('/employee', \App\Http\Controllers\EmployeeController::class);
+
+    Route::resource('/role', \App\Http\Controllers\RoleAndPermissionController::class);
+
+    Route::resource('/application', \App\Http\Controllers\ApplicationController::class);
+
+    Route::resource('/attendance', \App\Http\Controllers\AttendanceController::class);
+    Route::get('/attendanceCheckout',  [\App\Http\Controllers\AttendanceController::class, 'createCheckout'])->name('attendance.createCheckout');
+    Route::post('/attendanceCheckout',  [\App\Http\Controllers\AttendanceController::class, 'storeCheckout'])->name('attendance.storeCheckout');
+
+    Route::get('/listPosition', [\App\Http\Controllers\PositionController::class, 'select'])->name('position.select');
+    Route::get('/listAgency', [\App\Http\Controllers\AgencyController::class, 'select'])->name('agency.select');
+});
+
+Route::get('/welcome', function () {
+    return view('welcome');
+});
