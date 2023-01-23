@@ -17,7 +17,13 @@ class PositionTableSeeder extends Seeder
     public function run()
     {
         Position::create([
-            'name' => 'Staff Ahli',
+            'name' => 'Pranata Komputer',
+        ]);
+        Position::create([
+            'name' => 'Kepala Dinas',
+        ]);
+        Position::create([
+            'name' => 'Kasubag Kepegawaian',
         ]);
     }
 }
