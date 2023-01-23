@@ -3,8 +3,6 @@
 namespace App\Http\Requests\Position;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Contracts\Validation\Validator;
 
 class StorePositionRequest extends FormRequest
 {
@@ -18,15 +16,6 @@ class StorePositionRequest extends FormRequest
         return true;
     }
 
-    public function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->json([
-            'success'   => false,
-            'message'   => 'Validation errors',
-            'data'      => $validator->errors()
-        ]));
-    }
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -35,7 +24,7 @@ class StorePositionRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required',
+            'name' => 'required|min:3|max:255',
         ];
     }
 
@@ -43,6 +32,8 @@ class StorePositionRequest extends FormRequest
     {
         return [
             'name.required' => 'Nama jabatan wajib diisi',
+            'name.min' => 'Minimal 3 huruf',
+            'name.max' => 'Maksimal 255 huruf',
         ];
     }
 }

@@ -18,15 +18,6 @@ class UpdatePositionRequest extends FormRequest
         return true;
     }
 
-    public function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->json([
-            'success'   => false,
-            'message'   => 'Validation errors',
-            'data'      => $validator->errors()
-        ]));
-    }
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -35,7 +26,7 @@ class UpdatePositionRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required',
+            'name' => 'required|min:3|max:255',
         ];
     }
 
@@ -43,6 +34,8 @@ class UpdatePositionRequest extends FormRequest
     {
         return [
             'name.required' => 'Nama jabatan wajib diisi',
+            'name.min' => 'Minimal 3 huruf',
+            'name.max' => 'Maksimal 255 huruf',
         ];
     }
 }
