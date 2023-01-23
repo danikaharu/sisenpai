@@ -104,4 +104,10 @@ class AgencyController extends Controller
                 ->with('error', $th->getMessage());
         }
     }
+
+    public function select()
+    {
+        $data = Agency::where('name', 'LIKE', '%' . request('q') . '%')->paginate(10);
+        return response()->json($data);
+    }
 }
