@@ -3,8 +3,6 @@
 namespace App\Http\Requests\Agency;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Contracts\Validation\Validator;
 
 class UpdateAgencyRequest extends FormRequest
 {
@@ -27,18 +25,9 @@ class UpdateAgencyRequest extends FormRequest
     {
         return [
             'name' => 'required|min:3|max:255',
-            'longitude' => 'required',
-            'latitude' => 'required',
+            'longitude' => 'required|numeric',
+            'latitude' => 'required|numeric',
         ];
-    }
-
-    public function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->json([
-            'success'   => false,
-            'message'   => 'Validation errors',
-            'data'      => $validator->errors()
-        ]));
     }
 
     public function messages()
@@ -48,7 +37,9 @@ class UpdateAgencyRequest extends FormRequest
             'name.min' => 'Nama instansi minimal 3 kata',
             'name.max' => 'Nama instansi minimal 255 kata',
             'longitude.required' => 'Longitude wajib diisi',
+            'longitude.numeric' => 'Longitude hanya boleh angka',
             'latitude.required' => 'Latitude wajib diisi',
+            'latitude.numeric' => 'Latitude hanya boleh angka',
         ];
     }
 }
