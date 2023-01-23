@@ -20,7 +20,7 @@ class RoleAndPermissionTableSeeder extends Seeder
 
         $roleSuperAdmin = Role::create(['name' => 'Super Admin']);
         $roleAdminOPD = Role::create(['name' => 'Admin OPD']);
-        $rolePengguna = Role::create(['name' => 'Pengguna']);
+        $rolePegawai = Role::create(['name' => 'Pegawai']);
 
         foreach (config('permission.list_permissions') as $permission) {
             foreach ($permission['lists'] as $list) {
