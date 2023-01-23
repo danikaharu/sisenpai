@@ -20,4 +20,9 @@ class Employee extends Model
     {
         return $this->belongsTo(Position::class)->withDefault();
     }
+
+    public function user()
+    {
+        return $this->hasOne(User::class)->withDefault();
+    }
 }
