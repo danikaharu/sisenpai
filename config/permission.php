@@ -194,6 +194,7 @@ return [
                 'create application',
                 'edit application',
                 'delete application',
+                'show application',
             ]
         ],
         [
