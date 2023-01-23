@@ -104,4 +104,10 @@ class PositionController extends Controller
                 ->with('error', $th->getMessage());
         }
     }
+
+    public function select()
+    {
+        $data = Position::where('name', 'LIKE', '%' . request('q') . '%')->paginate(10);
+        return response()->json($data);
+    }
 }
