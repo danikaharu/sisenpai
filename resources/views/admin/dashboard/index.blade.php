@@ -57,15 +57,21 @@
         </div>
         <div class="row mb-4">
             <div class="col-xl-12 col-md-12 col-sm-12">
-                <a href="{{ route('attendance.create') }}" class="btn rounded-pill btn-md btn-primary mb-2">
-                    Absen Masuk
-                </a>
-                <a href="{{ route('attendance.createCheckout') }}" class="btn rounded-pill btn-md btn-primary mb-2">
-                    Absen Pulang
-                </a>
-                <a href="{{ route('application.create') }}" class="btn rounded-pill btn-md btn-warning mb-2">
-                    Pengajuan
-                </a>
+                @can('create attendance')
+                    <a href="{{ route('attendance.create') }}" class="btn rounded-pill btn-md btn-primary mb-2">
+                        Absen Masuk
+                    </a>
+                    <a href="{{ route('attendance.createCheckout') }}" class="btn rounded-pill btn-md btn-primary mb-2">
+                        Absen Pulang
+                    </a>
+                @endcan
+
+                @can('create application')
+                    <a href="{{ route('application.create') }}" class="btn rounded-pill btn-md btn-warning mb-2">
+                        Pengajuan
+                    </a>
+                @endcan
+
             </div>
         </div>
     </section>

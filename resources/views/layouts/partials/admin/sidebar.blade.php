@@ -51,40 +51,58 @@
                     </a>
                 </li>
 
-                <li class="sidebar-item{{ request()->is('application') ? ' active' : '' }}">
-                    <a href="{{ route('application.index') }}" class="sidebar-link">
-                        <i class="bi bi-envelope-fill"></i>
-                        <span>Pengajuan</span>
-                    </a>
-                </li>
+                @can('view application')
+                    <li class="sidebar-item{{ request()->is('application') ? ' active' : '' }}">
+                        <a href="{{ route('application.index') }}" class="sidebar-link">
+                            <i class="bi bi-envelope-fill"></i>
+                            <span>Pengajuan</span>
+                        </a>
+                    </li>
+                @endcan
 
-                <li class="sidebar-item has-sub">
-                    <a href="#" class="sidebar-link">
-                        <i class="icon dripicons dripicons-toggles"></i>
-                        <span>Manajemen</span>
-                    </a>
-                    <ul class="submenu">
-                        <li class="submenu-item">
-                            <a href="{{ route('employee.index') }}">Pegawai</a>
-                        </li>
-                        <li class="submenu-item">
-                            <a href="{{ route('agency.index') }}">Instansi</a>
-                        </li>
-                        <li class="submenu-item">
-                            <a href="{{ route('position.index') }}">Jabatan</a>
-                        </li>
-                        <li class="submenu-item">
-                            <a href="{{ route('role.index') }}">Role</a>
-                        </li>
-                    </ul>
-                </li>
+                @hasanyrole('Super Admin|Admin OPD')
+                    <li class="sidebar-item has-sub">
+                        <a href="#" class="sidebar-link">
+                            <i class="icon dripicons dripicons-toggles"></i>
+                            <span>Manajemen</span>
+                        </a>
+                        <ul class="submenu">
+                            @can('view employee')
+                                <li class="submenu-item">
+                                    <a href="{{ route('employee.index') }}">Pegawai</a>
+                                </li>
+                            @endcan
 
-                <li class="sidebar-item{{ request()->is('attendance*') ? ' active' : '' }} ">
-                    <a href="{{ route('attendance.index') }}" class="sidebar-link">
-                        <i class="icon dripicons dripicons-blog"></i>
-                        <span>Absen</span>
-                    </a>
-                </li>
+                            @can('view agency')
+                                <li class="submenu-item">
+                                    <a href="{{ route('agency.index') }}">Instansi</a>
+                                </li>
+                            @endcan
+
+                            @can('view position')
+                                <li class="submenu-item">
+                                    <a href="{{ route('position.index') }}">Jabatan</a>
+                                </li>
+                            @endcan
+
+                            @can('view role & permission')
+                                <li class="submenu-item">
+                                    <a href="{{ route('role.index') }}">Role</a>
+                                </li>
+                            @endcan
+
+                        </ul>
+                    </li>
+                @endhasanyrole
+
+                @can('view attendance')
+                    <li class="sidebar-item{{ request()->is('attendance*') ? ' active' : '' }} ">
+                        <a href="{{ route('attendance.index') }}" class="sidebar-link">
+                            <i class="icon dripicons dripicons-blog"></i>
+                            <span>Absen</span>
+                        </a>
+                    </li>
+                @endcan
 
             </ul>
         </div>
