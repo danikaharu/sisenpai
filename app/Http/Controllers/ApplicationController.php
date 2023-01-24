@@ -174,4 +174,18 @@ class ApplicationController extends Controller
                 ->with('error', __('Maaf, Produk Hukum tidak bisa dihapus.'));
         }
     }
+
+    public function getApprove(Application $application)
+    {
+        return view('admin.application.approve', compact('application'));
+    }
+
+    public function storeApprove(Request $request, Application $application)
+    {
+        if ($application) {
+            $application->update(['status' => $request->status]);
+
+            return redirect()->route('application.index')->with('success', 'Pengajuan berhasil diproses');
+        }
+    }
 }
