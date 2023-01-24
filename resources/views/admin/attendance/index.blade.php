@@ -37,8 +37,39 @@
                             <div class="card-header">
                                 <div class="row">
                                     <div class="col-md-4">
-                                        <a href="#" class="btn btn-md btn-primary" data-bs-toggle="modal"
-                                            data-bs-target="#laporanabsenForm">Cetak Laporan</a>
+                                        <button type="button" class="btn btn-primary btn-md mb-2" data-bs-toggle="modal"
+                                            data-bs-target="#laporanAbsenModal"> Cetak Laporan
+                                        </button>
+
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="laporanAbsenModal" tabindex="-1"
+                                            aria-labelledby="laporanAbsenModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h1 class="modal-title fs-5" id="laporanAbsenModalLabel">
+                                                            Cetak Laporan
+                                                        </h1>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form action="{{ route('attendance.exportAttendance') }}">
+                                                            @csrf
+                                                            <div class="form-group">
+                                                                <label for="">Tanggal Awal</label>
+                                                                <input type="date" name="start_date" class="form-control">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="">Tanggal Selesai</label>
+                                                                <input type="date" name="end_date" class="form-control">
+                                                            </div>
+                                                            <button type="submit" class="btn btn-primary mt-4">Cetak</button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
