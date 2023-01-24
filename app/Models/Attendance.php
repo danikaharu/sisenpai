@@ -29,6 +29,19 @@ class Attendance extends Model
         }
     }
 
+    public function status()
+    {
+        if ($this->type == 1 || $this->type == 3) {
+            if ($this->time > '09:00:00') {
+                return 'Terlambat';
+            } else {
+                return 'Tepat Waktu';
+            }
+        } else {
+            return 'Tepat Waktu';
+        }
+    }
+
     public function scopeCheckAttendance($query, $value)
     {
         return $query->whereDate('created_at', \Carbon\Carbon::today())
