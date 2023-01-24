@@ -33,15 +33,14 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::resource('/role', \App\Http\Controllers\RoleAndPermissionController::class);
 
     Route::resource('/application', \App\Http\Controllers\ApplicationController::class);
+    Route::get('/approveApplication/{application}', [\App\Http\Controllers\ApplicationController::class, 'getApprove'])->name('application.approve');
+    Route::put('/approveApplication/{application}', [\App\Http\Controllers\ApplicationController::class, 'storeApprove'])->name('application.storeApprove');
 
     Route::resource('/attendance', \App\Http\Controllers\AttendanceController::class);
     Route::get('/attendanceCheckout',  [\App\Http\Controllers\AttendanceController::class, 'createCheckout'])->name('attendance.createCheckout');
     Route::post('/attendanceCheckout',  [\App\Http\Controllers\AttendanceController::class, 'storeCheckout'])->name('attendance.storeCheckout');
+    Route::get('/exportAttendance',  [\App\Http\Controllers\AttendanceController::class, 'exportAttendance'])->name('attendance.exportAttendance');
 
     Route::get('/listPosition', [\App\Http\Controllers\PositionController::class, 'select'])->name('position.select');
     Route::get('/listAgency', [\App\Http\Controllers\AgencyController::class, 'select'])->name('agency.select');
-});
-
-Route::get('/welcome', function () {
-    return view('welcome');
 });
