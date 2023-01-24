@@ -32,7 +32,7 @@ class UpdateEmployeeRequest extends FormRequest
             'email' => ['required', 'email', 'unique:employees,email,'  . $this->employee->id],
             'role' => ['required', 'exists:roles,id'],
             'password' =>  [
-                'required',
+                'nullable',
                 Password::min(8)
                     ->letters()
                     ->mixedCase()
