@@ -203,6 +203,7 @@ return [
             'lists' => [
                 'view attendance',
                 'create attendance',
+                'edit attendance',
             ]
         ],
         [
