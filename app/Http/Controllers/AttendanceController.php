@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\AttendanceExport;
 use App\Http\Requests\Attendance\{StoreAttendanceRequest, UpdateAttendanceRequest};
 use App\Models\{Attendance, Employee};
 use Illuminate\Http\Request;
@@ -51,15 +52,7 @@ class AttendanceController extends Controller
                     return $row->created_at->isoFormat('DD-MM-YYYY');
                 })
                 ->addColumn('status', function ($row) {
-                    if ($row->type == 1 || $row->type == 3) {
-                        if ($row->time > '09:00:00') {
-                            return 'Terlambat';
-                        } else {
-                            return 'Tepat Waktu';
-                        }
-                    } else {
-                        return 'Tepat Waktu';
-                    }
+                    return $row->status();
                 })
                 ->addColumn('action', 'admin.attendance.include.action')
                 ->toJson();
@@ -120,6 +113,11 @@ class AttendanceController extends Controller
                 ->with('toast_error', 'Maaf sudah tidak bisa melakukan absen masuk');
         }
 
+        if (\Carbon\Carbon::now()->toTimeString() <= '07:30:00') {
+            return redirect()->back()
+                ->with('toast_error', 'Maaf, belum bisa melakukan absen masuk');
+        }
+
         // Create a new attendance record
         $attendance = new Attendance;
         $attendance->user_id = $user->id;
@@ -167,7 +165,12 @@ class AttendanceController extends Controller
                 ->with('success', 'Maaf, anda belum melakukan absen masuk');
         }
 
-        if (\Carbon\Carbon::now()->toTimeString() <= '16:00:00') {
+        if (\Carbon\Carbon::now()->toTimeString() > '20:00:00' && !$checkOutAttendance) {
+            return redirect()->back()
+                ->with('toast_error', 'Maaf sudah tidak bisa melakukan absen pulang');
+        }
+
+        if (\Carbon\Carbon::now()->toTimeString() <= '16:30:00') {
             return redirect()->back()
                 ->with('toast_error', 'Maaf, belum bisa melakukan absen pulang');
         }
@@ -231,6 +234,18 @@ class AttendanceController extends Controller
     public function destroy(Attendance $attendance)
     {
         //
+    }
+
+    public function exportAttendance(Request $request)
+    {
+        $start_date = $request->start_date;
+        $end_date = $request->end_date;
+
+        if ($start_date && $end_date) {
+            return (new AttendanceExport($start_date, $end_date))->download('absen tanggal' . $start_date  . '-' . $end_date . '.xlsx');
+        } else {
+            return redirect()->back()->with('toast_error', 'Maaf, tidak bisa export data');
+        }
     }
 
     private function haversineDistance($latitudeFrom, $longitudeFrom, $latitudeTo, $longitudeTo, $earthRadius = 6371)
