@@ -26,7 +26,7 @@ class AttendanceController extends Controller
 
         if (auth()->user()->roles->first()->name == 'Super Admin') {
             $attendances->get();
-        } elseif (auth()->user()->roles->first()->name == 'Admin OPD') {
+        } elseif (auth()->user()->roles->first()->name == 'Admin OPD' || auth()->user()->roles->first()->name == 'Atasan') {
             $attendances->whereHas('user', function ($query) use ($adminInfo) {
                 $query->whereHas('employee', function ($q) use ($adminInfo) {
                     $q->where('agency_id', $adminInfo->agency_id);
@@ -210,7 +210,7 @@ class AttendanceController extends Controller
      */
     public function edit(Attendance $attendance)
     {
-        //
+        return view('admin.attendance.edit', compact('attendance'));
     }
 
     /**
@@ -220,9 +220,14 @@ class AttendanceController extends Controller
      * @param  \App\Models\Attendance  $attendance
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Attendance $attendance)
+    public function update(UpdateAttendanceRequest $request, Attendance $attendance)
     {
-        //
+        $attr = $request->validated();
+
+        $attendance->update($attr);
+
+        return redirect()->route('attendance.index')
+            ->with('success', 'Data berhasil diedit');
     }
 
     /**
