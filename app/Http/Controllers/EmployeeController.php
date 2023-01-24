@@ -134,7 +134,7 @@ class EmployeeController extends Controller
                 'status' => $request->status,
             ]);
 
-            $user->assignRole($request->role);
+            $user->syncRoles($request->role);
 
             DB::commit();
 
