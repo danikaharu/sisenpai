@@ -10,7 +10,7 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $todayAttendance = Attendance::whereDate('created_at', Carbon::today())->get();
+        $todayAttendance = Attendance::whereDate('created_at', Carbon::today())->latest()->get();
         $checkinAttendance = Attendance::checkAttendance(1)->first();
         $checkoutAttendance = Attendance::checkAttendance(2)->first();
 
