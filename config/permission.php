@@ -195,6 +195,7 @@ return [
                 'edit application',
                 'delete application',
                 'show application',
+                'approve application',
             ]
         ],
         [
