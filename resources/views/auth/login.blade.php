@@ -11,11 +11,9 @@
                 <h2 class="text-center mb-3">Login.</h2>
                 <form id="loginForm" action="{{ route('login') }}" method="POST">
                     @csrf
-                    {{-- <div class="alert alert-danger" style="display:none"></div>
-                    <div id="message_error"></div> --}}
                     <div class="form-group position-relative has-icon-left mb-4">
                         <input type="text" id="username" name="username"
-                            class="form-control @error('username') is-invalid @enderror" placeholder="Username" />
+                            class="form-control @error('username') is-invalid @enderror" placeholder="NIP" />
                         <div class="form-control-icon">
                             <i class="bi bi-person"></i>
                         </div>
