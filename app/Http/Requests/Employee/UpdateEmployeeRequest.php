@@ -3,8 +3,6 @@
 namespace App\Http\Requests\Employee;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\Rules\Password;
 
 class UpdateEmployeeRequest extends FormRequest
@@ -30,8 +28,8 @@ class UpdateEmployeeRequest extends FormRequest
             'agency_id' => ['required', 'exists:\App\Models\Agency,id'],
             'position_id' => ['required', 'exists:\App\Models\Position,id'],
             'name' => ['required', 'min:3', 'max:255'],
-            'nip' => ['required', 'min:3', 'max:255', 'unique:employees,nip'],
-            'email' => ['required', 'email', 'unique:employees,email'],
+            'nip' => ['required', 'min:3', 'max:255', 'unique:employees,nip,' . $this->employee->id],
+            'email' => ['required', 'email', 'unique:employees,email,'  . $this->employee->id],
             'role' => ['required', 'exists:roles,id'],
             'password' =>  [
                 'required',
@@ -44,15 +42,6 @@ class UpdateEmployeeRequest extends FormRequest
             ],
             'status' => ['required', 'in:0,1'],
         ];
-    }
-
-    public function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->json([
-            'success'   => false,
-            'message'   => 'Validation errors',
-            'data'      => $validator->errors()
-        ]));
     }
 
     public function messages()
