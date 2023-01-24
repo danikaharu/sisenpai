@@ -107,8 +107,9 @@ class EmployeeController extends Controller
     {
         $roles = Role::get();
         $positions = Position::get();
+        $agencies = Agency::get();
 
-        return view('admin.employee.edit', compact('roles', 'employee', 'positions'));
+        return view('admin.employee.edit', compact('roles', 'employee', 'positions', 'agencies'));
     }
 
     /**
