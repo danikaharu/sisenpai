@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Attendance;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -13,7 +13,7 @@ class UpdateAttendanceRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,11 @@ class UpdateAttendanceRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'user_id' => 'exists:users,id',
+            'type' => 'in:1,2,3,4',
+            'longitude' => 'required',
+            'latitude' => 'required',
+            'time' => 'required|date_format:H:i:s',
         ];
     }
 }
