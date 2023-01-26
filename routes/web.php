@@ -39,6 +39,8 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::resource('/attendance', \App\Http\Controllers\AttendanceController::class);
     Route::get('/attendanceCheckout',  [\App\Http\Controllers\AttendanceController::class, 'createCheckout'])->name('attendance.createCheckout');
     Route::post('/attendanceCheckout',  [\App\Http\Controllers\AttendanceController::class, 'storeCheckout'])->name('attendance.storeCheckout');
+    Route::get('/attendanceAssignmentCheckin',  [\App\Http\Controllers\AttendanceController::class, 'createAssignmentCheckin'])->name('attendance.createAssignmentCheckin');
+    Route::get('/attendanceAssignmentCheckout',  [\App\Http\Controllers\AttendanceController::class, 'createAssignmentCheckout'])->name('attendance.createAssignmentCheckout');
     Route::get('/exportAttendance',  [\App\Http\Controllers\AttendanceController::class, 'exportAttendance'])->name('attendance.exportAttendance');
 
     Route::get('/listPosition', [\App\Http\Controllers\PositionController::class, 'select'])->name('position.select');
