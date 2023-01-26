@@ -76,6 +76,16 @@ class AttendanceController extends Controller
         return view('admin.attendance.createCheckout');
     }
 
+    public function createAssignmentCheckin()
+    {
+        return view('admin.attendance.createAssignmentCheckin');
+    }
+
+    public function createAssignmentCheckout()
+    {
+        return view('admin.attendance.createAssignmentCheckout');
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -86,7 +96,8 @@ class AttendanceController extends Controller
     {
         $radius = 1; //100 meter
         $attr = $request->validated();
-        $checkinAttendance = Attendance::checkAttendance(1)->first();
+        $checkinRegular = Attendance::checkAttendance(1)->first();
+        $checkinAssignment = Attendance::checkAttendance(3)->first();
 
         // Get auth user
         $user = Auth::user();
@@ -98,24 +109,46 @@ class AttendanceController extends Controller
         $distance = $this->haversineDistance($attr['latitude'], $attr['longitude'], $latitude, $longitude);
         $convertDistance = number_format($distance, 2);
 
-        if ($convertDistance >= $radius) {
-            return redirect()->back()
-                ->with('toast_error', 'Anda tidak berada di lokasi presensi.');
-        }
+        if ($attr['type'] == 1) {
+            if ($convertDistance >= $radius) {
+                return redirect()->back()
+                    ->with('toast_error', 'Anda tidak berada di lokasi presensi.');
+            }
 
-        if ($checkinAttendance) {
-            return redirect()->route('dashboard.index')
-                ->with('toast_error', 'Anda sudah melakukan absen masuk');
-        }
+            if (\Carbon\Carbon::now()->toTimeString() > '12:00:00' && !$checkinRegular) {
+                return redirect()->back()
+                    ->with('toast_error', 'Maaf sudah tidak bisa melakukan absen masuk');
+            }
 
-        if (\Carbon\Carbon::now()->toTimeString() > '12:00:00' && !$checkinAttendance) {
-            return redirect()->back()
-                ->with('toast_error', 'Maaf sudah tidak bisa melakukan absen masuk');
-        }
+            if ($checkinRegular || $checkinAssignment) {
+                return redirect()->route('dashboard.index')
+                    ->with('toast_error', 'Anda sudah melakukan absen masuk');
+            }
 
-        if (\Carbon\Carbon::now()->toTimeString() <= '07:30:00') {
-            return redirect()->back()
-                ->with('toast_error', 'Maaf, belum bisa melakukan absen masuk');
+            if (\Carbon\Carbon::now()->toTimeString() <= '07:30:00') {
+                return redirect()->back()
+                    ->with('toast_error', 'Maaf, belum bisa melakukan absen masuk');
+            }
+        } else {
+            if ($convertDistance <= $radius) {
+                return redirect()->back()
+                    ->with('toast_error', 'Anda tidak berada di lokasi presensi.');
+            }
+
+            if (\Carbon\Carbon::now()->toTimeString() > '12:00:00' && !$checkinAssignment) {
+                return redirect()->back()
+                    ->with('toast_error', 'Maaf sudah tidak bisa melakukan absen masuk');
+            }
+
+            if ($checkinRegular || $checkinAssignment) {
+                return redirect()->route('dashboard.index')
+                    ->with('toast_error', 'Anda sudah melakukan absen masuk');
+            }
+
+            if (\Carbon\Carbon::now()->toTimeString() <= '07:30:00') {
+                return redirect()->back()
+                    ->with('toast_error', 'Maaf, belum bisa melakukan absen masuk');
+            }
         }
 
         // Create a new attendance record
@@ -137,8 +170,10 @@ class AttendanceController extends Controller
     {
         $radius = 1; //100 meter
         $attr = $request->validated();
-        $checkInAttendance = Attendance::checkAttendance(1)->first();
-        $checkOutAttendance = Attendance::checkAttendance(2)->first();
+        $checkinRegular = Attendance::checkAttendance(1)->first();
+        $checkoutRegular = Attendance::checkAttendance(2)->first();
+        $checkinAssignment = Attendance::checkAttendance(3)->first();
+        $checkoutAssignment = Attendance::checkAttendance(4)->first();
 
         // Get auth user
         $user = Auth::user();
@@ -150,24 +185,36 @@ class AttendanceController extends Controller
         $distance = $this->haversineDistance($attr['latitude'], $attr['longitude'], $latitude, $longitude);
         $convertDistance = number_format($distance, 2);
 
-        if ($convertDistance >= $radius) {
-            return redirect()->back()
-                ->with('toast_error', 'Anda tidak berada di lokasi presensi.');
+        if ($attr['type'] == 2) {
+            if ($convertDistance >= $radius) {
+                return redirect()->back()
+                    ->with('toast_error', 'Anda tidak berada di lokasi presensi.');
+            }
+
+            if (\Carbon\Carbon::now()->toTimeString() > '20:00:00' && !$checkoutRegular) {
+                return redirect()->back()
+                    ->with('toast_error', 'Maaf sudah tidak bisa melakukan absen pulang');
+            }
+        } else {
+            if ($convertDistance <= $radius) {
+                return redirect()->back()
+                    ->with('toast_error', 'Anda tidak berada di lokasi presensi.');
+            }
+
+            if (\Carbon\Carbon::now()->toTimeString() > '20:00:00' && !$checkoutAssignment) {
+                return redirect()->back()
+                    ->with('toast_error', 'Maaf sudah tidak bisa melakukan absen pulang');
+            }
         }
 
-        if ($checkOutAttendance) {
+        if ($checkoutRegular || $checkoutAssignment) {
             return redirect()->route('dashboard.index')
                 ->with('error', 'Anda sudah melakukan absen pulang');
         }
 
-        if (!$checkInAttendance) {
+        if (!$checkinRegular || !$checkinAssignment) {
             return redirect()->route('dashboard.index')
                 ->with('success', 'Maaf, anda belum melakukan absen masuk');
-        }
-
-        if (\Carbon\Carbon::now()->toTimeString() > '20:00:00' && !$checkOutAttendance) {
-            return redirect()->back()
-                ->with('toast_error', 'Maaf sudah tidak bisa melakukan absen pulang');
         }
 
         if (\Carbon\Carbon::now()->toTimeString() <= '16:30:00') {
