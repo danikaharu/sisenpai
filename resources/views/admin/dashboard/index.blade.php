@@ -26,8 +26,10 @@
                                 Absen Masuk
                             </h6>
                             <h5 class="font-extrabold mb-0 text-center">
-                                @if ($checkinAttendance)
-                                    {{ $checkinAttendance->time }}
+                                @if ($checkinRegular)
+                                    {{ $checkinRegular->time }}
+                                @elseif($checkinAssignment)
+                                    {{ $checkinAssignment->time }}
                                 @else
                                     Belum Absen
                                 @endif
@@ -44,8 +46,10 @@
                                 Absen Pulang
                             </h6>
                             <h5 class="font-extrabold mb-0 text-center">
-                                @if ($checkoutAttendance)
-                                    {{ $checkoutAttendance->time }}
+                                @if ($checkoutRegular)
+                                    {{ $checkoutRegular->time }}
+                                @elseif($checkoutAssignment)
+                                    {{ $checkoutAssignment->time }}
                                 @else
                                     Belum Absen
                                 @endif
@@ -63,6 +67,14 @@
                     </a>
                     <a href="{{ route('attendance.createCheckout') }}" class="btn rounded-pill btn-md btn-primary mb-2">
                         Absen Pulang
+                    </a>
+                    <a href="{{ route('attendance.createAssignmentCheckin') }}"
+                        class="btn rounded-pill btn-md btn-primary mb-2">
+                        Absen Penugasan Masuk
+                    </a>
+                    <a href="{{ route('attendance.createAssignmentCheckout') }}"
+                        class="btn rounded-pill btn-md btn-primary mb-2">
+                        Absen Penugasan Pulang
                     </a>
                 @endcan
 
