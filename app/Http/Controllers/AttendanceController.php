@@ -45,11 +45,8 @@ class AttendanceController extends Controller
                 ->addColumn('type', function ($row) {
                     return $row->type();
                 })
-                ->addColumn('time', function ($row) {
-                    return $row->time;
-                })
                 ->addColumn('created_at', function ($row) {
-                    return $row->created_at->isoFormat('DD-MM-YYYY');
+                    return $row->created_at->isoFormat('dddd, D MMMM Y');
                 })
                 ->addColumn('status', function ($row) {
                     return $row->status();
@@ -71,9 +68,9 @@ class AttendanceController extends Controller
         return view('admin.attendance.createCheckin');
     }
 
-    public function createCheckout()
+    public function createCheckout(Attendance $attendance)
     {
-        return view('admin.attendance.createCheckout');
+        return view('admin.attendance.createCheckout', compact('attendance'));
     }
 
     public function createAssignmentCheckin()
@@ -81,9 +78,9 @@ class AttendanceController extends Controller
         return view('admin.attendance.createAssignmentCheckin');
     }
 
-    public function createAssignmentCheckout()
+    public function createAssignmentCheckout(Attendance $attendance)
     {
-        return view('admin.attendance.createAssignmentCheckout');
+        return view('admin.attendance.createAssignmentCheckout', compact('attendance'));
     }
 
     /**
@@ -97,7 +94,7 @@ class AttendanceController extends Controller
         $radius = 1; //100 meter
         $attr = $request->validated();
         $checkinRegular = Attendance::checkAttendance(1)->first();
-        $checkinAssignment = Attendance::checkAttendance(3)->first();
+        $checkinAssignment = Attendance::checkAttendance(2)->first();
 
         // Get auth user
         $user = Auth::user();
@@ -106,7 +103,7 @@ class AttendanceController extends Controller
         // Check location
         $latitude = $userInfo->agency->latitude;
         $longitude = $userInfo->agency->longitude;
-        $distance = $this->haversineDistance($attr['latitude'], $attr['longitude'], $latitude, $longitude);
+        $distance = $this->haversineDistance($attr['checkin_latitude'], $attr['checkin_longitude'], $latitude, $longitude);
         $convertDistance = number_format($distance, 2);
 
         if ($attr['type'] == 1) {
@@ -155,10 +152,10 @@ class AttendanceController extends Controller
         $attendance = new Attendance;
         $attendance->user_id = $user->id;
         $attendance->type = $attr['type'];
-        $attendance->latitude = $attr['latitude'];
-        $attendance->longitude = $attr['longitude'];
-        $attendance->time = $attr['time'];
-        $attendance->photo = $this->uploadPhoto();
+        $attendance->checkin_latitude = $attr['checkin_latitude'];
+        $attendance->checkin_longitude = $attr['checkin_longitude'];
+        $attendance->checkin_time = $attr['checkin_time'];
+        $attendance->checkin_photo = $this->uploadPhoto($request->checkin_photo);
         $attendance->save();
 
         // Return a success response
@@ -166,14 +163,12 @@ class AttendanceController extends Controller
             ->with('success', 'Absen Masuk Berhasil');
     }
 
-    public function storeCheckout(StoreAttendanceRequest $request)
+    public function storeCheckout(UpdateAttendanceRequest $request, Attendance $attendance)
     {
         $radius = 1; //100 meter
         $attr = $request->validated();
-        $checkinRegular = Attendance::checkAttendance(1)->first();
-        $checkoutRegular = Attendance::checkAttendance(2)->first();
-        $checkinAssignment = Attendance::checkAttendance(3)->first();
-        $checkoutAssignment = Attendance::checkAttendance(4)->first();
+        $checkRegular = Attendance::checkAttendance(1)->first();
+        $checkAssignment = Attendance::checkAttendance(2)->first();
 
         // Get auth user
         $user = Auth::user();
@@ -182,18 +177,28 @@ class AttendanceController extends Controller
         // Check location
         $latitude = $userInfo->agency->latitude;
         $longitude = $userInfo->agency->longitude;
-        $distance = $this->haversineDistance($attr['latitude'], $attr['longitude'], $latitude, $longitude);
+        $distance = $this->haversineDistance($attr['checkout_latitude'], $attr['checkout_longitude'], $latitude, $longitude);
         $convertDistance = number_format($distance, 2);
 
-        if ($attr['type'] == 2) {
+        if ($request->type == 1) {
             if ($convertDistance >= $radius) {
                 return redirect()->back()
                     ->with('toast_error', 'Anda tidak berada di lokasi presensi.');
             }
 
-            if (\Carbon\Carbon::now()->toTimeString() > '20:00:00' && !$checkoutRegular) {
+            if (\Carbon\Carbon::now()->toTimeString() > '20:00:00' && !$checkRegular) {
                 return redirect()->back()
                     ->with('toast_error', 'Maaf sudah tidak bisa melakukan absen pulang');
+            }
+
+            if (\Carbon\Carbon::now()->toTimeString() <= '16:30:00') {
+                return redirect()->back()
+                    ->with('toast_error', 'Maaf, belum bisa melakukan absen pulang');
+            }
+
+            if ($checkRegular->checkout_time != NULL) {
+                return redirect()->route('dashboard.index')
+                    ->with('success', 'Anda sudah melakukan absen pulang');
             }
         } else {
             if ($convertDistance <= $radius) {
@@ -201,36 +206,37 @@ class AttendanceController extends Controller
                     ->with('toast_error', 'Anda tidak berada di lokasi presensi.');
             }
 
-            if (\Carbon\Carbon::now()->toTimeString() > '20:00:00' && !$checkoutAssignment) {
+            if (\Carbon\Carbon::now()->toTimeString() > '20:00:00' && !$checkAssignment) {
                 return redirect()->back()
                     ->with('toast_error', 'Maaf sudah tidak bisa melakukan absen pulang');
             }
+
+
+            if (\Carbon\Carbon::now()->toTimeString() <= '16:30:00') {
+                return redirect()->back()
+                    ->with('toast_error', 'Maaf, belum bisa melakukan absen pulang');
+            }
+
+            if ($checkAssignment->checkout_time != NULL) {
+                return redirect()->route('dashboard.index')
+                    ->with('success', 'Anda sudah melakukan absen pulang');
+            }
+
+            if (!$checkRegular || !$checkAssignment) {
+                if ($checkAssignment->checkin_time == NULL) {
+                    return redirect()->route('dashboard.index')
+                        ->with('success', 'Maaf, anda belum melakukan absen masuk');
+                }
+            }
         }
 
-        if ($checkoutRegular || $checkoutAssignment) {
-            return redirect()->route('dashboard.index')
-                ->with('error', 'Anda sudah melakukan absen pulang');
-        }
-
-        if (!$checkinRegular || !$checkinAssignment) {
-            return redirect()->route('dashboard.index')
-                ->with('success', 'Maaf, anda belum melakukan absen masuk');
-        }
-
-        if (\Carbon\Carbon::now()->toTimeString() <= '16:30:00') {
-            return redirect()->back()
-                ->with('toast_error', 'Maaf, belum bisa melakukan absen pulang');
-        }
-
-        // Create a new attendance record
-        $attendance = new Attendance;
-        $attendance->user_id = $user->id;
-        $attendance->type = $attr['type'];
-        $attendance->latitude = $attr['latitude'];
-        $attendance->longitude = $attr['longitude'];
-        $attendance->time = $attr['time'];
-        $attendance->photo = $this->uploadPhoto();
-        $attendance->save();
+        // Update attendance record
+        $attendance->update([
+            'checkout_latitude' => $attr['checkout_latitude'],
+            'checkout_longitude' => $attr['checkout_longitude'],
+            'checkout_time' => $attr['checkout_time'],
+            'checkout_photo' => $this->uploadPhoto($request->checkout_photo),
+        ]);
 
         // Return a success response
         return redirect()->route('dashboard.index')
@@ -246,7 +252,38 @@ class AttendanceController extends Controller
      */
     public function show(Attendance $attendance)
     {
-        //
+        $attendanceQuery = Attendance::query();
+        $month = request()->filter_month;
+        $year = request()->filter_year;
+
+        if (!empty($month && $year)) {
+            $attendanceQuery->whereMonth('created_at', $month)
+                ->whereYear('created_at', $year);
+        }
+
+        $attendances = $attendanceQuery->with('employee')
+            ->where('user_id', $attendance->user_id)
+            ->latest();
+
+        if (request()->ajax()) {
+            return dataTables()->of($attendances)
+                ->addIndexColumn()
+                ->addColumn('nama', function ($row) {
+                    return $row->user ? $row->user->name : '-';
+                })
+                ->addColumn('type', function ($row) {
+                    return $row->type();
+                })
+                ->addColumn('created_at', function ($row) {
+                    return $row->created_at->isoFormat('dddd, D MMMM Y');
+                })
+                ->addColumn('status', function ($row) {
+                    return $row->status();
+                })
+                ->toJson();
+        }
+
+        return view('admin.attendance.show', compact('attendance'));
     }
 
     /**
@@ -290,11 +327,12 @@ class AttendanceController extends Controller
 
     public function exportAttendance(Request $request)
     {
-        $start_date = $request->start_date;
-        $end_date = $request->end_date;
+        $month = $request->month;
+        $year = $request->year;
+        $id = $request->user;
 
-        if ($start_date && $end_date) {
-            return (new AttendanceExport($start_date, $end_date))->download('absen tanggal' . $start_date  . '-' . $end_date . '.xlsx');
+        if ($month && $year) {
+            return (new AttendanceExport($month, $year, $id))->download('Data absen bulan' . $month  . '-' . $year . '.xlsx');
         } else {
             return redirect()->back()->with('toast_error', 'Maaf, tidak bisa export data');
         }
@@ -312,9 +350,9 @@ class AttendanceController extends Controller
         return $earthRadius * $c;
     }
 
-    private function uploadPhoto()
+    private function uploadPhoto($fileInputName)
     {
-        $photo = request()->photo;
+        $photo = $fileInputName;
 
         $image_parts = explode(";base64,", $photo);
         $image_type_aux = explode("image/", $image_parts[0]);
