@@ -16,14 +16,16 @@ class AttendanceExport implements FromCollection, WithHeadings, WithMapping, Sho
 {
     use Exportable;
 
-    protected $start_date;
-    protected $end_date;
+    protected $month;
+    protected $year;
+    protected $user_id;
     private $row = 0;
 
-    function __construct($start_date, $end_date)
+    function __construct($month, $year, $user_id)
     {
-        $this->start_date = $start_date;
-        $this->end_date = $end_date;
+        $this->month = $month;
+        $this->year = $year;
+        $this->user_id = $user_id;
     }
 
     public function model(array $row)
@@ -34,8 +36,10 @@ class AttendanceExport implements FromCollection, WithHeadings, WithMapping, Sho
     public function collection()
     {
 
-        $data = Attendance::with('user.employee')
-            ->whereBetween('created_at', [$this->start_date, $this->end_date])
+        $data = Attendance::with('user')
+            ->where('user_id', $this->user_id)
+            ->whereMonth('created_at', $this->month)
+            ->whereYear('created_at', $this->year)
             ->get();
 
         return $data;
@@ -48,9 +52,10 @@ class AttendanceExport implements FromCollection, WithHeadings, WithMapping, Sho
     {
         return [
             ++$this->row,
-            $attendance->user->employee->name,
+            $attendance->created_at->isoFormat('DD-MM-YYYY'),
             $attendance->type(),
-            $attendance->time,
+            $attendance->checkin_time,
+            $attendance->checkout_time,
             $attendance->status()
         ];
     }
@@ -58,11 +63,12 @@ class AttendanceExport implements FromCollection, WithHeadings, WithMapping, Sho
     public function headings(): array
     {
         return [
-            'NO.',
-            'NAMA',
-            'JENIS ABSEN',
-            'WAKTU ABSEN',
-            'STATUS ABSEN'
+            'No.',
+            'Tanggal',
+            'Jenis Absen',
+            'Jam Masuk',
+            'Jam Pulang',
+            'Status',
         ];
     }
 
@@ -95,7 +101,7 @@ class AttendanceExport implements FromCollection, WithHeadings, WithMapping, Sho
                 ];
 
 
-                $event->sheet->getStyle('A2:E2')->applyFromArray($styleArray);
+                $event->sheet->getStyle('A2:F2')->applyFromArray($styleArray);
             },
         ];
     }
