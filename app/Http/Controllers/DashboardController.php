@@ -2,20 +2,30 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Attendance;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
+use App\Models\{Application, Attendance, Employee};
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        $todayAttendance = Attendance::whereDate('created_at', Carbon::today())->latest()->get();
-        $checkinRegular = Attendance::checkAttendance(1)->first();
-        $checkoutRegular = Attendance::checkAttendance(2)->first();
-        $checkinAssignment = Attendance::checkAttendance(3)->first();
-        $checkoutAssignment = Attendance::checkAttendance(4)->first();
+        $usernameAdmin = Auth::user()->username;
+        $adminInfo = Employee::where('nip', $usernameAdmin)->first();
 
-        return view('admin.dashboard.index', compact('todayAttendance', 'checkinRegular', 'checkoutRegular', 'checkinAssignment', 'checkoutAssignment'));
+        $data = [
+            'checkRegular' => Attendance::checkAttendance(1)->first(),
+            'checkAssignment' => Attendance::checkAttendance(2)->first(),
+        ];
+
+        $todayAttendance = Attendance::whereHas('user', function ($query) use ($adminInfo) {
+            $query->whereHas('employee', function ($q) use ($adminInfo) {
+                $q->where('agency_id', $adminInfo->agency_id);
+            });
+        })->whereDate('created_at', \Carbon\Carbon::today())
+            ->get();
+
+        $application = Application::whereMonth('created_at', \Carbon\Carbon::now())->latest()->get();
+
+        return view('admin.dashboard.index', compact('data', 'application', 'todayAttendance'));
     }
 }
