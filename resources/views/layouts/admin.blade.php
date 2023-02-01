@@ -1,6 +1,6 @@
 @include('layouts.partials.admin.header')
 
-<div class="page-heading">
+<div id="main-content">
     @yield('content')
 </div>
 
