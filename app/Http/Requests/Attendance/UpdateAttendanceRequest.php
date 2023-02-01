@@ -24,11 +24,10 @@ class UpdateAttendanceRequest extends FormRequest
     public function rules()
     {
         return [
-            'user_id' => 'exists:users,id',
-            'type' => 'in:1,2,3,4',
-            'longitude' => 'required',
-            'latitude' => 'required',
-            'time' => 'required|date_format:H:i:s',
+            'checkout_longitude' => 'required',
+            'checkout_latitude' => 'required',
+            'checkout_time' => 'required|date_format:H:i:s',
+            'checkout_photo' => 'required',
         ];
     }
 }

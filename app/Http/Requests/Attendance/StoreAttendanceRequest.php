@@ -35,10 +35,10 @@ class StoreAttendanceRequest extends FormRequest
         return [
             'user_id' => 'exists:users,id',
             'type' => 'in:1,2,3,4',
-            'longitude' => 'required',
-            'latitude' => 'required',
-            'time' => 'required|date_format:H:i:s',
-            'photo' => 'required',
+            'checkin_longitude' => 'required',
+            'checkin_latitude' => 'required',
+            'checkin_time' => 'required|date_format:H:i:s',
+            'checkin_photo' => 'required',
         ];
     }
 
@@ -46,11 +46,11 @@ class StoreAttendanceRequest extends FormRequest
     {
         return [
             'user_id.exists' => 'Pengguna tidak terdaftar',
-            'longitude.required' => 'Longitude wajib diisi',
-            'latitude.required' => 'Latitude wajib diisi',
-            'time.required' => 'Waktu absen tidak boleh kosong',
-            'time.date_format' => 'Maaf tidak sesuai format',
-            'photo.required' => 'Selfie wajib',
+            'checkin_longitude.required' => 'Longitude wajib diisi',
+            'checkin_latitude.required' => 'Latitude wajib diisi',
+            'checkin_time.required' => 'Waktu absen tidak boleh kosong',
+            'checkin_time.date_format' => 'Maaf tidak sesuai format',
+            'checkin_photo.required' => 'Selfie wajib',
         ];
     }
 }
