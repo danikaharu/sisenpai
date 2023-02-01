@@ -8,9 +8,10 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-body">
-                        <form action="{{ route('attendance.storeCheckout') }}" method="POST" enctype="multipart/form-data">
+                        <form action="{{ route('attendance.storeCheckout', $attendance->id) }}" method="POST"
+                            enctype="multipart/form-data">
                             @csrf
-                            <input type="hidden" name="type" value="4">
+                            <input type="hidden" name="type" value="2">
                             <div class="row">
                                 <div class="col-md-6">
                                     <div id="my_camera"></div>
@@ -19,24 +20,24 @@
                                         class="btn btn-primary me-1 mb-1">
                                     <input id="resetSnapshot" type="button" value="Reset Gambar" onClick="reset_snapshot()"
                                         class="btn btn-success me-1 mb-1 d-none">
-                                    <input type="hidden" name="photo" class="image-tag">
+                                    <input type="hidden" name="checkout_photo" class="image-tag">
                                 </div>
                                 <div class="col-md-6">
                                     <div id="results">Gambar anda akan muncul disini ...</div>
                                 </div>
                                 <div class="col-12">
                                     <div class="form-group">
-                                        <input type="hidden" id="time" name="time">
+                                        <input type="hidden" id="time" name="checkout_time">
                                     </div>
                                 </div>
                                 <div class="col-12">
                                     <div class="form-group">
-                                        <input type="hidden" id="latitude" name="latitude" />
+                                        <input type="hidden" id="latitude" name="checkout_latitude" />
                                     </div>
                                 </div>
                                 <div class="col-12">
                                     <div class="form-group">
-                                        <input type="hidden" id="longitude" name="longitude" />
+                                        <input type="hidden" id="longitude" name="checkout_longitude" />
                                     </div>
                                 </div>
                             </div>

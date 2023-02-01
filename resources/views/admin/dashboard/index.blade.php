@@ -26,10 +26,10 @@
                                 Absen Masuk
                             </h6>
                             <h5 class="font-extrabold mb-0 text-center">
-                                @if ($checkinRegular)
-                                    {{ $checkinRegular->time }}
-                                @elseif($checkinAssignment)
-                                    {{ $checkinAssignment->time }}
+                                @if ($data['checkRegular'])
+                                    {{ $data['checkRegular']->checkin_time }}
+                                @elseif($data['checkAssignment'])
+                                    {{ $data['checkAssignment']->checkin_time }}
                                 @else
                                     Belum Absen
                                 @endif
@@ -46,10 +46,10 @@
                                 Absen Pulang
                             </h6>
                             <h5 class="font-extrabold mb-0 text-center">
-                                @if ($checkoutRegular)
-                                    {{ $checkoutRegular->time }}
-                                @elseif($checkoutAssignment)
-                                    {{ $checkoutAssignment->time }}
+                                @if ($data['checkRegular'])
+                                    {{ $data['checkRegular']->checkout_time }}
+                                @elseif($data['checkAssignment'])
+                                    {{ $data['checkAssignment']->checkout_time }}
                                 @else
                                     Belum Absen
                                 @endif
@@ -65,14 +65,15 @@
                     <a href="{{ route('attendance.create') }}" class="btn rounded-pill btn-md btn-primary mb-2">
                         Absen Masuk
                     </a>
-                    <a href="{{ route('attendance.createCheckout') }}" class="btn rounded-pill btn-md btn-primary mb-2">
+                    <a href="{{ route('attendance.createCheckout', $data['checkRegular'] ?? ($data['checkRegular']->id ?? '')) }}"
+                        class="btn rounded-pill btn-md btn-primary mb-2">
                         Absen Pulang
                     </a>
                     <a href="{{ route('attendance.createAssignmentCheckin') }}"
                         class="btn rounded-pill btn-md btn-primary mb-2">
                         Absen Penugasan Masuk
                     </a>
-                    <a href="{{ route('attendance.createAssignmentCheckout') }}"
+                    <a href="{{ route('attendance.createAssignmentCheckout', $data['checkAssignment'] ?? ($data['checkAssignment']->id ?? '')) }}"
                         class="btn rounded-pill btn-md btn-primary mb-2">
                         Absen Penugasan Pulang
                     </a>
@@ -90,10 +91,10 @@
 
     @if (auth()->user()->roles()->first()->id != 3)
         <div class="row">
-            <div class="col-12">
+            <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">
-                        <h4>Absen Harian {{ \Carbon\Carbon::now()->isoFormat('D MMMM Y') }}</h4>
+                        <h4>Absensi Hari Ini </h4>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -102,8 +103,6 @@
                                     <tr>
                                         <th>No</th>
                                         <th>Nama</th>
-                                        <th>Jenis Absen</th>
-                                        <th>Waktu Absen</th>
                                         <th>Status</th>
                                         <th>Aksi</th>
                                     </tr>
@@ -113,25 +112,52 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $data->user->name }}</td>
-                                            <td>{{ $data->type() }}</td>
-                                            <td>{{ $data->time }}</td>
+                                            <td>{{ $data->status() }}</td>
                                             <td>
-                                                @if ($data->type == 1 || $data->type == 3)
-                                                    @if ($data->time > '09:00:00')
-                                                        <span class="badge bg-danger">Terlambat</span>
-                                                    @else
-                                                        <span class="badge bg-success">Tepat Waktu</span>
-                                                    @endif
-                                                @else
-                                                    <span class="badge bg-success">Tepat Waktu</span>
-                                                @endif
-                                            </td>
-                                            <td>
-                                                <a href="{{ asset('storage/upload/absen/' . $data->photo) }}"
-                                                    class="btn btn-warning" target="_blank">
-                                                    <i class="bi bi-eye-fill"></i>
+                                                <a href="{{ route('attendance.show', $data->id) }}"
+                                                    class="btn btn-secondary btn-sm">
+                                                    <i class="bi bi-box-arrow-up-right"></i>
                                                 </a>
                                             </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="6" class="text-center">
+                                                Maaf, belum ada data
+                                            </td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Pengajuan </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped" id="table1">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Nama</th>
+                                        <th>Jenis Pengajuan</th>
+                                        <th>Tanggal Mulai</th>
+                                        <th>Tanggal Selesai</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse ($application as $data)
+                                        <tr>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $data->user->name }}</td>
+                                            <td>{{ $data->type() }}</td>
+                                            <td>{{ $data->start_date }}</td>
+                                            <td>{{ $data->end_date }}</td>
                                         </tr>
                                     @empty
                                         <tr>
@@ -153,8 +179,4 @@
 
 @push('js')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
-    <script src="https://cdn.datatables.net/v/bs5/dt-1.12.1/datatables.min.js"></script>
-    <script>
-        $('#table1').DataTable();
-    </script>
 @endpush
