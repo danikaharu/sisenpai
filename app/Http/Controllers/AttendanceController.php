@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\AttendanceExport;
-use App\Http\Requests\Attendance\{StoreAttendanceRequest, UpdateAttendanceRequest};
+use App\Http\Requests\Attendance\{StoreAttendanceRequest, StoreCheckoutAttendanceRequest, UpdateAttendanceRequest};
 use App\Models\{Attendance, Employee};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Auth, Storage};
@@ -163,7 +163,7 @@ class AttendanceController extends Controller
             ->with('success', 'Absen Masuk Berhasil');
     }
 
-    public function storeCheckout(UpdateAttendanceRequest $request, Attendance $attendance)
+    public function storeCheckout(StoreCheckoutAttendanceRequest $request, Attendance $attendance)
     {
         $radius = 1; //100 meter
         $attr = $request->validated();
