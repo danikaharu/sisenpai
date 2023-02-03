@@ -34,7 +34,7 @@ class StoreAttendanceRequest extends FormRequest
     {
         return [
             'user_id' => 'exists:users,id',
-            'type' => 'in:1,2,3,4',
+            'type' => 'in:1,2',
             'checkin_longitude' => 'required',
             'checkin_latitude' => 'required',
             'checkin_time' => 'required|date_format:H:i:s',
