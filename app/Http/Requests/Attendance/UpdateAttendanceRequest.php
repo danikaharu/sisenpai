@@ -24,10 +24,26 @@ class UpdateAttendanceRequest extends FormRequest
     public function rules()
     {
         return [
-            'checkout_longitude' => 'required',
-            'checkout_latitude' => 'required',
-            'checkout_time' => 'required|date_format:H:i:s',
-            'checkout_photo' => 'required',
+            'type' => 'in:1,2',
+            'checkin_longitude' => 'required|numeric',
+            'checkin_latitude' => 'required|numeric',
+            'checkout_longitude' => 'numeric',
+            'checkout_latitude' => 'numeric',
+            'checkin_time' => 'required|date_format:H:i:s',
+            'checkout_time' => 'date_format:H:i:s',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'type.in' => 'Jenis Absen tidak ada dalam daftar',
+            'checkin_longitude.numeric' => 'Hanya bisa angka',
+            'checkin_latitude.numeric' => 'Hanya bisa angka',
+            'checkout_longitude.numeric' => 'Hanya bisa angka',
+            'checkout_longitude.numeric' => 'Hanya bisa angka',
+            'checkin_time.date_format' => 'Maaf, jam tidak sesuai format',
+            'checkout_time.date_format' => 'Maaf, jam tidak sesuai format',
         ];
     }
 }
