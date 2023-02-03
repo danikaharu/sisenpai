@@ -23,34 +23,55 @@
                     @csrf
                     <div class="form-body">
                         <div class="row">
-                            <div class="col-12">
+                            <div class="col-md-12">
                                 <div class="form-group">
                                     <label for="nama_pegawai"><b>Nama Pegawai</b></label>
                                     <p>{{ $attendance->user->name }}</p>
                                 </div>
                             </div>
-                            <div class="col-12">
+                            <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="latitude"><b>Latitude </b></label>
-                                    <input class="form-control" type="text" name="latitude"
-                                        value="{{ isset($attendance) ? $attendance->latitude : old('latitude') }}">
+                                    <label for="latitude"><b>Latitude Absen Masuk </b></label>
+                                    <input class="form-control" type="text" name="checkin_latitude"
+                                        value="{{ isset($attendance) ? $attendance->checkin_latitude : old('checkin_latitude') }}">
                                 </div>
                             </div>
-                            <div class="col-12">
+                            <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="longitude"><b>Longitude </b></label>
-                                    <input class="form-control" type="text" name="longitude"
-                                        value="{{ isset($attendance) ? $attendance->longitude : old('longitude') }}">
+                                    <label for="longitude"><b>Longitude Absen Masuk </b></label>
+                                    <input class="form-control" type="text" name="checkin_longitude"
+                                        value="{{ isset($attendance) ? $attendance->checkin_longitude : old('checkin_longitude') }}">
                                 </div>
                             </div>
-                            <div class="col-12">
+                            <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="time"><b>Waktu Absen</b></label>
-                                    <input class="form-control" type="text" name="time"
-                                        value="{{ isset($attendance) ? $attendance->time : old('time') }}">
+                                    <label for="time"><b>Waktu Absen Masuk</b></label>
+                                    <input class="form-control" type="text" name="checkin_time"
+                                        value="{{ isset($attendance) ? $attendance->checkin_time : old('checkin_time') }}">
                                 </div>
                             </div>
-                            <div class="col-12">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="latitude"><b>Latitude Absen Pulang </b></label>
+                                    <input class="form-control" type="text" name="checkout_latitude"
+                                        value="{{ isset($attendance) ? $attendance->checkout_latitude : old('checkout_latitude') }}">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="longitude"><b>Longitude Absen Pulang </b></label>
+                                    <input class="form-control" type="text" name="checkout_longitude"
+                                        value="{{ isset($attendance) ? $attendance->checkout_longitude : old('checkout_longitude') }}">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="time"><b>Waktu Absen Pulang</b></label>
+                                    <input class="form-control" type="text" name="checkout_time"
+                                        value="{{ isset($attendance) ? $attendance->checkout_time : old('checkout_time') }}">
+                                </div>
+                            </div>
+                            <div class="col-md-12">
                                 <div class="form-group">
                                     <label for="type"><b>Jenis Absen</b></label>
                                     <fieldset class="form-group">
@@ -58,16 +79,10 @@
                                             <option selected>-- Pilih jenis absen --</option>
                                             <option value="1"
                                                 {{ isset($attendance) && $attendance->type == 1 ? 'selected' : (old('type') == 1 ? 'selected' : '') }}>
-                                                Absen Masuk</option>
+                                                Reguler</option>
                                             <option value="2"
                                                 {{ isset($attendance) && $attendance->type == 2 ? 'selected' : (old('type') == 2 ? 'selected' : '') }}>
-                                                Absen Pulang</option>
-                                            <option value="3"
-                                                {{ isset($attendance) && $attendance->type == 3 ? 'selected' : (old('type') == 3 ? 'selected' : '') }}>
-                                                Absen Penugasan Masuk</option>
-                                            <option value="4"
-                                                {{ isset($attendance) && $attendance->type == 4 ? 'selected' : (old('type') == 4 ? 'selected' : '') }}>
-                                                Absen Penugasan Pulang</option>
+                                                Penugasan</option>
                                         </select>
                                     </fieldset>
                                 </div>
