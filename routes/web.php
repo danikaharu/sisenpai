@@ -45,4 +45,7 @@ Route::group(['middleware' => ['auth', 'web']], function () {
 
     Route::get('/listPosition', [\App\Http\Controllers\PositionController::class, 'select'])->name('position.select');
     Route::get('/listAgency', [\App\Http\Controllers\AgencyController::class, 'select'])->name('agency.select');
+
+    Route::get('/profile', [\App\Http\Controllers\ProfileController::class, 'index'])->name('profile');
+    Route::put('/profile/password/{user}', [\App\Http\Controllers\ProfileController::class, 'updatePassword'])->name('update.password');
 });
