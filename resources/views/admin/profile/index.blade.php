@@ -17,6 +17,82 @@
 
         <section class="section mt-4">
 
+            {{-- Profile --}}
+            <div class="row">
+                <div class="col-md-3">
+                    <h4>{{ __('Profile') }}</h4>
+                </div>
+                <div class="col-md-9">
+                    <div class="card">
+                        <div class="card-body">
+                            <form action="{{ route('update.profile', $user->id) }}" method="POST"
+                                enctype="multipart/form-data">
+                                @csrf
+                                @method('PUT')
+
+                                <div class="form-group">
+                                    <label for="email">{{ __('E-mail Address') }}</label>
+                                    <input type="email" name="email"
+                                        class="form-control @error('email', 'updateProfileInformation') is-invalid @enderror"
+                                        id="email" placeholder="{{ __('E-mail Address') }}"
+                                        value="{{ old('email') ?? auth()->user()->email }}" required>
+
+                                    @error('email', 'updateProfileInformation')
+                                        <span class="text-danger">
+                                            {{ $message }}
+                                        </span>
+                                    @enderror
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="name">{{ __('Name') }}</label>
+                                    <input type="text" name="name"
+                                        class="form-control  @error('name', 'updateProfileInformation') is-invalid @enderror"
+                                        id="name" placeholder="{{ __('Name') }}"
+                                        value="{{ old('name') ?? auth()->user()->name }}" required>
+                                    @error('name', 'updateProfileInformation')
+                                        <span class="text-danger">
+                                            {{ $message }}
+                                        </span>
+                                    @enderror
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-1">
+                                        <div class="avatar avatar-xl mb-3">
+                                            @if (auth()->user()->avatar == null)
+                                                <img src="https://www.gravatar.com/avatar/{{ md5(strtolower(trim(auth()->user()->email))) }}&s=500"
+                                                    alt="Avatar">
+                                            @else
+                                                <img src="{{ asset('uploads/avatars/' . auth()->user()->avatar) }}"
+                                                    alt="Avatar">
+                                            @endif
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-11">
+                                        <div class="form-group">
+                                            <label for="avatar">{{ __('Avatar') }}</label>
+                                            <input type="file" name="avatar"
+                                                class="form-control @error('avatar', 'updateProfileInformation') is-invalid @enderror"
+                                                id="avatar">
+
+                                            @error('avatar', 'updateProfileInformation')
+                                                <span class="text-danger">
+                                                    {{ $message }}
+                                                </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary">{{ __('Update Profile') }}</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             {{-- Password --}}
             <div class="row">
                 <div class="col-md-12">

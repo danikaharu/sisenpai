@@ -48,4 +48,5 @@ Route::group(['middleware' => ['auth', 'web']], function () {
 
     Route::get('/profile', [\App\Http\Controllers\ProfileController::class, 'index'])->name('profile');
     Route::put('/profile/password/{user}', [\App\Http\Controllers\ProfileController::class, 'updatePassword'])->name('update.password');
+    Route::put('/profile/{user}', [\App\Http\Controllers\ProfileController::class, 'updateProfile'])->name('update.profile');
 });

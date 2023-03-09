@@ -24,6 +24,7 @@ class User extends Authenticatable
         'username',
         'email',
         'password',
+        'avatar',
         'status',
     ];
 
@@ -48,6 +49,6 @@ class User extends Authenticatable
 
     public function employee()
     {
-        return $this->belongsTo(Employee::class)->withDefault();
+        return $this->belongsTo(Employee::class, 'username', 'nip')->withDefault();
     }
 }
