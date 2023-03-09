@@ -4,10 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
-use RealRashid\SweetAlert\Facades\Alert;
 
 class ProfileController extends Controller
 {
@@ -15,7 +14,7 @@ class ProfileController extends Controller
     {
         $user = auth()->user();
 
-        return view('admin.profile', compact('user'));
+        return view('admin.profile.index', compact('user'));
     }
 
     public function updatePassword(User $user, Request $request)
@@ -43,6 +42,7 @@ class ProfileController extends Controller
             'password' => Hash::make($request['password']),
         ])->save();
 
-        return view('auth.login');
+        Auth::logoutOtherDevices($request['password']);
+        Auth::logout();
     }
 }
