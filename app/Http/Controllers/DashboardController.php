@@ -17,11 +17,10 @@ class DashboardController extends Controller
             'checkAssignment' => Attendance::checkAttendance(2)->first(),
         ];
 
-        $todayAttendance = Attendance::whereHas('user', function ($query) use ($adminInfo) {
-            $query->whereHas('employee', function ($q) use ($adminInfo) {
-                $q->where('agency_id', $adminInfo->agency_id);
-            });
+        $todayAttendance = Attendance::whereHas('employee', function ($query) use ($adminInfo) {
+            $query->where('agency_id', $adminInfo->agency_id);
         })->whereDate('created_at', \Carbon\Carbon::today())
+            ->orderBy('checkin_time', 'DESC')
             ->get();
 
         $application = Application::whereMonth('created_at', \Carbon\Carbon::now())->latest()->get();
