@@ -23,25 +23,23 @@ class ApplicationController extends Controller
 
         $applicationQuery = Application::query();
 
-        $applications = $applicationQuery->with('user.employee')->latest();
+        $applications = $applicationQuery->with('employee')->latest();
 
         if (auth()->user()->roles->first()->name == 'Super Admin') {
             $applications->latest()->get();
         } elseif (auth()->user()->roles->first()->name == 'Admin OPD') {
-            $applications->whereHas('user', function ($query) use ($adminInfo) {
-                $query->whereHas('employee', function ($q) use ($adminInfo) {
-                    $q->where('agency_id', $adminInfo->agency_id);
-                });
+            $applications->whereHas('employee', function ($query) use ($adminInfo) {
+                $query->where('agency_id', $adminInfo->agency_id);
             })->latest()->get();
         } else {
-            $applications->where('user_id', auth()->user()->id)->latest();
+            $applications->where('employee_id', auth()->user()->id)->latest();
         }
 
         if (request()->ajax()) {
             return dataTables()->of($applications)
                 ->addIndexColumn()
                 ->addColumn('name', function ($row) {
-                    return $row->user ? $row->user->name : '-';
+                    return $row->employee ? $row->employee->name : '-';
                 })
                 ->addColumn('type', function ($row) {
                     return $row->type();
@@ -104,7 +102,7 @@ class ApplicationController extends Controller
      */
     public function show(Application $application)
     {
-        $application->load('user:id,name');
+        $application->load('employee:id,name');
         return view('admin.application.show', compact('application'));
     }
 
@@ -171,7 +169,7 @@ class ApplicationController extends Controller
         } catch (\Throwable $th) {
             return redirect()
                 ->route('application.index')
-                ->with('error', __('Maaf, Produk Hukum tidak bisa dihapus.'));
+                ->with('error', __('Maaf, Pengajuan tidak bisa dihapus.'));
         }
     }
 

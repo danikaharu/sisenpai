@@ -111,7 +111,7 @@
                                     @forelse ($todayAttendance as $data)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $data->user->name }}</td>
+                                            <td>{{ $data->employee->name }}</td>
                                             <td>{{ $data->status() }}</td>
                                             <td>
                                                 <a href="{{ route('attendance.show', $data->id) }}"
@@ -154,7 +154,7 @@
                                     @forelse ($application as $data)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $data->user->name }}</td>
+                                            <td>{{ $data->employee->name }}</td>
                                             <td>{{ $data->type() }}</td>
                                             <td>{{ $data->start_date }}</td>
                                             <td>{{ $data->end_date }}</td>

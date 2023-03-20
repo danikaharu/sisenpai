@@ -9,7 +9,7 @@ class Application extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'type', 'explanation', 'file', 'start_date', 'end_date', 'status'];
+    protected $fillable = ['employee_id', 'type', 'explanation', 'file', 'start_date', 'end_date', 'status'];
 
     public function type()
     {
@@ -36,5 +36,10 @@ class Application extends Model
     public function user()
     {
         return $this->belongsTo(User::class)->withDefault();
+    }
+
+    public function employee()
+    {
+        return $this->belongsTo(Employee::class)->withDefault();
     }
 }

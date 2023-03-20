@@ -19,7 +19,7 @@ class StoreApplicationRequest extends FormRequest
     public function prepareForValidation()
     {
         $this->merge([
-            'user_id' => auth()->user()->id,
+            'employee_id' => auth()->user()->id,
             'status' => 2,
         ]);
     }
@@ -32,7 +32,7 @@ class StoreApplicationRequest extends FormRequest
     public function rules()
     {
         return [
-            'user_id' => 'exists:users,id',
+            'employee_id' => 'exists:employees,id',
             'type' => 'required|in:1,2,3',
             'explanation' => 'required',
             'file' => 'required|max:2048|mimes:png,jpg,jpeg,pdf',

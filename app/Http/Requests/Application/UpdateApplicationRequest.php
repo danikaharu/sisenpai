@@ -24,7 +24,7 @@ class UpdateApplicationRequest extends FormRequest
     public function rules()
     {
         return [
-            'user_id' => 'exists:users,id',
+            'employee_id' => 'exists:employees,id',
             'type' => 'required|in:1,2,3',
             'explanation' => 'required',
             'file' => 'max:2048|mimes:png,jpg,jpeg,pdf',
