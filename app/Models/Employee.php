@@ -23,6 +23,6 @@ class Employee extends Model
 
     public function user()
     {
-        return $this->hasOne(User::class)->withDefault();
+        return $this->hasOne(User::class, 'username', 'nip')->withDefault();
     }
 }

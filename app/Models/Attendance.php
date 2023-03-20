@@ -9,7 +9,7 @@ class Attendance extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'type', 'checkin_longitude', 'checkin_latitude', 'checkout_longitude', 'checkout_latitude', 'checkin_time', 'checkout_time', 'checkin_photo', 'checkout_photo'];
+    protected $fillable = ['employee_id', 'type', 'checkin_longitude', 'checkin_latitude', 'checkout_longitude', 'checkout_latitude', 'checkin_time', 'checkout_time', 'checkin_photo', 'checkout_photo'];
 
     public function user()
     {
@@ -42,7 +42,7 @@ class Attendance extends Model
     public function scopeCheckAttendance($query, $value)
     {
         return $query->whereDate('created_at', \Carbon\Carbon::today())
-            ->where('user_id', auth()->user()->id)
+            ->where('employee_id', auth()->user()->username)
             ->where('type', $value);
     }
 }

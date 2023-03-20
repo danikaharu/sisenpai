@@ -21,7 +21,7 @@ class StoreAttendanceRequest extends FormRequest
     public function prepareForValidation()
     {
         $this->merge([
-            'user_id' => auth()->user()->id,
+            'employee_id' => auth()->user()->id,
         ]);
     }
 
@@ -33,7 +33,7 @@ class StoreAttendanceRequest extends FormRequest
     public function rules()
     {
         return [
-            'user_id' => 'exists:users,id',
+            'employee_id' => 'exists:employees,id',
             'type' => 'in:1,2',
             'checkin_longitude' => 'required',
             'checkin_latitude' => 'required',
@@ -45,7 +45,7 @@ class StoreAttendanceRequest extends FormRequest
     public function messages()
     {
         return [
-            'user_id.exists' => 'Pengguna tidak terdaftar',
+            'employee_id.exists' => 'Pengguna tidak terdaftar',
             'checkin_longitude.required' => 'Longitude wajib diisi',
             'checkin_latitude.required' => 'Latitude wajib diisi',
             'checkin_time.required' => 'Waktu absen tidak boleh kosong',

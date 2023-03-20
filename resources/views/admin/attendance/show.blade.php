@@ -62,7 +62,7 @@
                             <button id="filter" type="submit" class="btn btn-primary">Tampilkan</button>
                             <form action="{{ route('attendance.exportAttendance') }}">
                                 @csrf
-                                <input type="hidden" name="user" value="{{ $attendance->user_id }}" readonly>
+                                <input type="hidden" name="employee_id" value="{{ $attendance->employee_id }}" readonly>
                                 <input type="hidden" id="month" name="month" readonly>
                                 <input type="hidden" id="year" name="year" readonly>
                                 <button id="export" type="submit" class="btn btn-success "> Export Excel
@@ -82,6 +82,7 @@
                                 <th>Jam Masuk</th>
                                 <th>Jam Pulang</th>
                                 <th>Status</th>
+                                <th>Gambar</th>
                             </tr>
                         </thead>
                     </table>
@@ -131,6 +132,11 @@
                         }
 
                     }
+                },
+                {
+                    data: 'photo',
+                    searchable: false,
+                    orderable: false
                 },
             ],
         });

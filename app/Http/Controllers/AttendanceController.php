@@ -39,8 +39,8 @@ class AttendanceController extends Controller
         if (request()->ajax()) {
             return dataTables()->of($attendances)
                 ->addIndexColumn()
-                ->addColumn('nama', function ($row) {
-                    return $row->user ? $row->user->name : '-';
+                ->addColumn('name', function ($row) {
+                    return $row->employee ? $row->employee->name : '-';
                 })
                 ->addColumn('type', function ($row) {
                     return $row->type();
@@ -262,15 +262,12 @@ class AttendanceController extends Controller
         }
 
         $attendances = $attendanceQuery->with('employee')
-            ->where('user_id', $attendance->user_id)
+            ->where('employee_id', $attendance->employee_id)
             ->latest();
 
         if (request()->ajax()) {
             return dataTables()->of($attendances)
                 ->addIndexColumn()
-                ->addColumn('nama', function ($row) {
-                    return $row->user ? $row->user->name : '-';
-                })
                 ->addColumn('type', function ($row) {
                     return $row->type();
                 })
@@ -280,6 +277,15 @@ class AttendanceController extends Controller
                 ->addColumn('status', function ($row) {
                     return $row->status();
                 })
+                ->editColumn('photo', function (Attendance $attendance) {
+                    $checkin_photo = $attendance->checkin_photo;
+                    $checkout_photo = $attendance->checkout_photo;
+                    return '
+                    <a class="btn btn-warning btn-sm"  href="' . asset('storage/upload/absen/' . $checkin_photo) . '" target="_blank">Absen Masuk</a>
+                    <a class="btn btn-warning btn-sm"  href="' . asset('storage/upload/absen/' . $checkout_photo) . '" target="_blank">Absen Pulang</a>
+                    ';
+                })
+                ->rawColumns(['photo'])
                 ->toJson();
         }
 

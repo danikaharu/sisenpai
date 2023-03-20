@@ -72,8 +72,8 @@
                     searchable: false,
                     orderable: false
                 }, {
-                    data: 'nama',
-                    name: 'user.name'
+                    data: 'name',
+                    name: 'employee.name'
                 },
                 {
                     data: 'type'
