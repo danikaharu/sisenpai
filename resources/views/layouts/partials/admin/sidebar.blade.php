@@ -55,7 +55,7 @@
                     <li class="sidebar-item{{ request()->is('application') ? ' active' : '' }}">
                         <a href="{{ route('application.index') }}" class="sidebar-link">
                             <i class="bi bi-envelope-fill"></i>
-                            <span>Pengajuan</span>
+                            <span>Data Pengajuan</span>
                         </a>
                     </li>
                 @endcan
@@ -99,7 +99,7 @@
                     <li class="sidebar-item{{ request()->is('attendance*') ? ' active' : '' }} ">
                         <a href="{{ route('attendance.index') }}" class="sidebar-link">
                             <i class="icon dripicons dripicons-blog"></i>
-                            <span>Absen</span>
+                            <span>Data Absen</span>
                         </a>
                     </li>
                 @endcan

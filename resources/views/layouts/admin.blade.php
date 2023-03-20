@@ -1,7 +1,20 @@
-@include('layouts.partials.admin.header')
+@include('layouts.partials.admin.head')
 
-<div id="main-content">
-    @yield('content')
-</div>
+<body>
+    <div id="app">
+        @include('layouts.partials.admin.sidebar')
+        <div id="main" class="layout-navbar">
+            @include('layouts.partials.admin.header')
 
-@include('layouts.partials.admin.footer')
+            <div id="main-content">
+                @yield('content')
+            </div>
+
+            @include('layouts.partials.admin.footer')
+        </div>
+    </div>
+
+    @include('layouts.partials.admin.script')
+</body>
+
+</html>
