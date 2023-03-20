@@ -150,7 +150,7 @@ class AttendanceController extends Controller
 
         // Create a new attendance record
         $attendance = new Attendance;
-        $attendance->user_id = $user->id;
+        $attendance->employee_id = $user->id;
         $attendance->type = $attr['type'];
         $attendance->checkin_latitude = $attr['checkin_latitude'];
         $attendance->checkin_longitude = $attr['checkin_longitude'];
