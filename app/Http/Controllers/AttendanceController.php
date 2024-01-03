@@ -191,7 +191,7 @@ class AttendanceController extends Controller
                     ->with('toast_error', 'Maaf sudah tidak bisa melakukan absen pulang');
             }
 
-            if (\Carbon\Carbon::now()->toTimeString() <= '16:30:00') {
+            if (\Carbon\Carbon::now()->toTimeString() <= '16:00:00') {
                 return redirect()->back()
                     ->with('toast_error', 'Maaf, belum bisa melakukan absen pulang');
             }
@@ -212,7 +212,7 @@ class AttendanceController extends Controller
             }
 
 
-            if (\Carbon\Carbon::now()->toTimeString() <= '16:30:00') {
+            if (\Carbon\Carbon::now()->toTimeString() <= '16:00:00') {
                 return redirect()->back()
                     ->with('toast_error', 'Maaf, belum bisa melakukan absen pulang');
             }
