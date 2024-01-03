@@ -204,6 +204,7 @@ return [
                 'view attendance',
                 'create attendance',
                 'edit attendance',
+                'delete attendance',
             ]
         ],
         [
