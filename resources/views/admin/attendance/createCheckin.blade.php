@@ -68,7 +68,8 @@
         function take_snapshot() {
             Webcam.snap(function(data_uri) {
                 $(".image-tag").val(data_uri);
-                document.getElementById('results').innerHTML = '<img src="' + data_uri + '"/>';
+                document.getElementById('results').innerHTML = '<img src="' + data_uri +
+                    '" height="250" width="330" style="display:block;margin:0 auto;"/>';
                 document.getElementById('resetSnapshot').classList.remove('d-none');
                 document.getElementById('resetSnapshot').classList.add('d-block');
             });
