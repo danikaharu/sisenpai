@@ -61,6 +61,7 @@
 @endsection
 
 @push('js')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
     <script src="https://cdn.datatables.net/v/bs5/dt-1.12.1/datatables.min.js"></script>
     <script>
         $('#data-table').DataTable({
@@ -104,6 +105,25 @@
                     orderable: false
                 },
             ],
+        });
+
+        // Sweet Alert Delete
+        $("body").on('submit', `form[role='alert']`, function(event) {
+            event.preventDefault();
+            Swal.fire({
+                title: $(this).attr('alert-title'),
+                text: $(this).attr('alert-text'),
+                icon: "warning",
+                allowOutsideClick: false,
+                showCancelButton: true,
+                cancelButtonText: "Batal",
+                reverseButton: true,
+                confirmButtonText: "Hapus",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    event.target.submit();
+                }
+            })
         });
     </script>
 @endpush

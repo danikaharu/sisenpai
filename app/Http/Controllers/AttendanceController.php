@@ -328,7 +328,24 @@ class AttendanceController extends Controller
      */
     public function destroy(Attendance $attendance)
     {
-        //
+        try {
+            $path = storage_path('app/public/upload/absen/');
+
+            if ($attendance->checkin_photo != null && file_exists($path . $attendance->checkin_photo)) {
+                unlink($path . $attendance->checkin_photo);
+            }
+
+            if ($attendance->checkout_photo != null && file_exists($path . $attendance->checkout_photo)) {
+                unlink($path . $attendance->checkout_photo);
+            }
+
+            $attendance->delete();
+            return redirect()->route('attendance.index')->with('success', 'Data Berhasil Dihapus');
+        } catch (\Throwable $th) {
+            return redirect()
+                ->route('attendance.index')
+                ->with('error', __('Maaf, Absen tidak bisa dihapus.'));
+        }
     }
 
     public function exportAttendance(Request $request)
