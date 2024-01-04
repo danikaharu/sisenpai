@@ -105,7 +105,12 @@ class EmployeeController extends Controller
      */
     public function edit(Employee $employee)
     {
-        $roles = Role::get();
+        $user = auth()->user();
+        if ($user->hasRole('Admin OPD')) {
+            $roles = Role::whereIn('name', ['Admin OPD', 'Pegawai'])->get();
+        } else {
+            $roles = Role::get();
+        }
         $positions = Position::get();
         $agencies = Agency::get();
 
