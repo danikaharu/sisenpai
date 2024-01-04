@@ -17,10 +17,6 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
-Route::get('/login', function () {
-    return redirect('/');
-});
-
 Route::post('/login', [\App\Http\Controllers\AuthController::class, 'login'])->name('login');
 
 Route::group(['middleware' => ['auth', 'web']], function () {
