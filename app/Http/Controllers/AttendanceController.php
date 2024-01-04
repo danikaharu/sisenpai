@@ -22,15 +22,13 @@ class AttendanceController extends Controller
 
         $attendanceQuery = Attendance::query();
 
-        $attendances = $attendanceQuery->with('user.employee')->latest();
+        $attendances = $attendanceQuery->with('employee')->latest();
 
         if (auth()->user()->roles->first()->name == 'Super Admin') {
             $attendances->get();
         } elseif (auth()->user()->roles->first()->name == 'Admin OPD' || auth()->user()->roles->first()->name == 'Atasan') {
-            $attendances->whereHas('user', function ($query) use ($adminInfo) {
-                $query->whereHas('employee', function ($q) use ($adminInfo) {
-                    $q->where('agency_id', $adminInfo->agency_id);
-                });
+            $attendances->whereHas('employee', function ($query) use ($adminInfo) {
+                $query->where('agency_id', $adminInfo->agency_id);
             })->get();
         } else {
             $attendances->where('user_id', auth()->user()->id);
