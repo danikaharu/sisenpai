@@ -16,9 +16,18 @@ class EmployeeController extends Controller
      */
     public function index()
     {
+        $employeeQuery = Employee::query();
+
+        $employees = $employeeQuery->with('position');
+
+        if (auth()->user()->roles->first()->name == 'Super Admin') {
+            $employees->get();
+        } else {
+            $employees->whereNot('name',  'Super Admin');
+        }
+
         if (request()->ajax()) {
-            $employee = Employee::latest()->get();
-            return datatables()->of($employee)
+            return datatables()->of($employees)
                 ->addIndexColumn()
                 ->addColumn('position', function ($row) {
                     return $row->position ? $row->position->name : '-';
