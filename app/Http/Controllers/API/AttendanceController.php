@@ -5,13 +5,10 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Attendance\{StoreAttendanceRequest, UpdateAttendanceRequest};
 use App\Models\{Attendance, Employee};
-use Stevebauman\Location\Facades\Location;
 use Illuminate\Support\Facades\Auth;
 
 class AttendanceController extends Controller
 {
-
-    private $radius = 100 / 1.609; // 100 meter
 
     /**
      * Display a listing of the resource.
@@ -20,7 +17,8 @@ class AttendanceController extends Controller
      */
     public function index()
     {
-        //
+        $attendances = Attendance::all();
+        return response()->json($attendances);
     }
 
     /**
@@ -31,39 +29,38 @@ class AttendanceController extends Controller
      */
     public function store(StoreAttendanceRequest $request)
     {
-        $location = Location::get();
-
+        $radius = 1; //100 meter
         $attr = $request->validated();
+        dd($attr);
 
         // Get auth user
-        $username = Auth::user()->username;
-        $userInfo = Employee::where('nip', $username)->first();
+        $user = Auth::user();
+        $userInfo = Employee::where('nip', $user->username)->first();
 
         // Check location
-        // $latitude = $userInfo->agency->latitude;
-        // $longitude = $userInfo->agency->longitude;
-        // $distance = $this->haversineGreatCircleDistance($latitude, $longitude, $location->latitude, $location->longitude);
+        $latitude = $userInfo->agency->latitude;
+        $longitude = $userInfo->agency->longitude;
+        $distance = $this->haversineDistance($attr['latitude'], $attr['longitude'], $latitude, $longitude);
+        $convertDistance = number_format($distance, 2);
 
-        echo '<pre>';
-        var_dump($location);
-        echo '</pre>';
-
-        // if ($distance > $this->radius) {
-        //     // return response()->json(['message' => 'Anda tidak berada di lokasi presensi.'], 400);
-        // } else {
-        //     // return response()->json(['message' => 'Anda berada di lokasi presensi.'], 200);
-        // }
+        if ($convertDistance >= $radius) {
+            return response()->json(['message' => 'Anda tidak berada di lokasi presensi.'], 400);
+        } else {
+            return response()->json(['message' => 'Anda berada di lokasi presensi.'], 200);
+        }
 
         // Create a new attendance record
-        // $attendance = new Attendance;
-        // $attendance->user_id = $user->id;
-        // $attendance->latitude = $location->latitude;
-        // $attendance->longitude = $location->longitude;
-        // $attendance->photo = $attr['photo']->store('selfies');
-        // $attendance->save();
+        $attendance = new Attendance;
+        $attendance->user_id = $user->id;
+        $attendance->type = $attr['type'];
+        $attendance->latitude = $attr['latitude'];
+        $attendance->longitude = $attr['longitude'];
+        $attendance->time = $attr['time'];
+        $attendance->photo = $attr['photo']->store('selfies');
+        $attendance->save();
 
         // Return a success response
-        // return response()->json(['message' => 'Check-in successful!'], 200);
+        return response()->json(['message' => 'Absen berhasil'], 200);
     }
 
     /**
@@ -74,7 +71,7 @@ class AttendanceController extends Controller
      */
     public function show(Attendance $attendance)
     {
-        //
+        return response()->json($attendance);
     }
 
     /**
@@ -100,22 +97,15 @@ class AttendanceController extends Controller
         //
     }
 
-    private function haversineGreatCircleDistance($latitudeFrom, $longitudeFrom, $latitudeTo, $longitudeTo)
+    private function haversineDistance($latitudeFrom, $longitudeFrom, $latitudeTo, $longitudeTo, $earthRadius = 6371)
     {
         // convert from degrees to radians
-        $latFrom = deg2rad($latitudeFrom);
-        $lonFrom = deg2rad($longitudeFrom);
-        $latTo = deg2rad($latitudeTo);
-        $lonTo = deg2rad($longitudeTo);
+        $latDelta = deg2rad($latitudeTo - $latitudeFrom);
+        $lonDelta = deg2rad($longitudeTo - $longitudeFrom);
 
-        $latDelta = $latTo - $latFrom;
-        $lonDelta = $lonTo - $lonFrom;
+        $a = sin($latDelta / 2) * sin($latDelta / 2) + cos(deg2rad($latitudeFrom)) * cos(deg2rad($latitudeTo)) * sin($lonDelta / 2) * sin($lonDelta / 2);
+        $c = 2 * asin(sqrt($a));
 
-        $a = sin($latDelta / 2) * sin($latDelta / 2) + cos($latFrom) * cos($latTo) * sin($lonDelta / 2) * sin($lonDelta / 2);
-        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
-        $distance = 6371 * $c;
-
-        // return distance in km
-        return $distance;
+        return $earthRadius * $c;
     }
 }

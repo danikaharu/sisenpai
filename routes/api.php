@@ -30,7 +30,7 @@ use Illuminate\Support\Facades\Route;
 
 //     Route::apiResource('/application', \App\Http\Controllers\API\ApplicationController::class);
 
-//     Route::apiResource('/attendance', \App\Http\Controllers\API\AttendanceController::class);
+Route::apiResource('/attendance', \App\Http\Controllers\API\AttendanceController::class);
 // });
 
 // Route::post('/login', [\App\Http\Controllers\API\AuthController::class, 'login'])->name('login');
